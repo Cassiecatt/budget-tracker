@@ -1,12 +1,10 @@
-// console.log('Hi from your service-worker.js file!');
-
 const CACHE_NAME = "my-site-cache-v1";
 const Data_CACHE_NAME = "data_cache_v1";
 
 const FILES_TO_CACHE = [
   "/",
   "/index.html",
-  "manifest.json",
+  "/manifest.json",
   "/css/styles.css",
   "/icons/icon-72x72x.png",
   "/icons/icon-96x96.png",
@@ -29,7 +27,24 @@ self.addEventListener("install", function (e) {
   );
 });
 
-//Activate service worker & remove old data from the cache
+//Activate service worker and remove old data from cache
+self.addEventListener("activate", function (e) {
+  e.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(
+        keyList.map((key) => {
+          if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
+            console.log("removing old cache data", key);
+            return caches.delete(key);
+          }
+        })
+      );
+    })
+  );
+  self.ClientRectList.claim();
+});
+
+//Intercept fetch requests
 self.addEventListener("fetch", function (e) {
   if (e.request.url.includes("/api/")) {
     e.respondWith(
@@ -60,7 +75,7 @@ self.addEventListener("fetch", function (e) {
         if (response) {
           return response;
         } else if (e.request.headers.get("accept").includes("text/html")) {
-            // return the cached home page for all html requests
+          // return the cached home page for all html requests
           return caches.match("/");
         }
       });
