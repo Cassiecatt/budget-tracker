@@ -41,7 +41,6 @@ self.addEventListener("activate", function (e) {
       );
     })
   );
-  self.ClientRectList.claim();
 });
 
 //Intercept fetch requests
