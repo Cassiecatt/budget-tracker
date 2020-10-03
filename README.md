@@ -19,5 +19,5 @@ THEN the deposits or expenses added while they were offline are added to their t
 * NPM i
 
 ## Mock Up
-! [Example of application]("./app-mock-up.png)
+! [Example of application](https://cassiecatt.github.io/buget-tracker/app-mock-up.png)
 
