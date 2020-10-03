@@ -18,7 +18,7 @@ request.onsuccess = function (e) {
 
   //check if app is online
   if (navigator.onLine) {
-    // checkDatabase();
+    checkDatabase();
   }
 };
 
@@ -30,10 +30,52 @@ request.onerror = function (e) {
 function saveRecord(record) {
   //open new transaction with db with read / write permissions
   const transaction = db.transaction(["newBudget"], "readwrite");
-
   //access the objet store for 'newBudget'
-  const store = transaction.createObjectStore("newBudget");
-
+  const store = transaction.objectStore("newBudget");
   //add record to store with add method
   store.add(record);
 }
+
+function checkDatabase() {
+  //open a transaction on the db
+  const transaction = db.transaction(["newBudget"], "readwrite");
+  //access object store
+  const store = transaction.objectStore("newBudget");
+  //get all records from store and set to a variable
+  const getAll = store.getAll();
+
+  //upon a successful getAll execution, run this function
+  getAll.onsuccess = function () {
+    //if there was data in indexedDB store, send to api server
+    if (getAll.result.length > 0) {
+      fetch("/api/transaction/bulk", {
+        method: "POST",
+        body: JSON.stringify(getAll.result),
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((serverReponse) => {
+          if (serverReponse.message) {
+            throw new Error(serverResponse);
+          }
+          //open another transaction
+          const transaction = db.transaction(["newBudget"], "readwrite");
+          //access the newBudget object store
+          const store = transaction.objectStore("newBudget");
+          //clear all items in store
+          store.clear();
+
+          alert("All saved transactions have been submitted!");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+}
+
+//listen for app coming back online
+window.addEventListener("online", checkDatabase);
