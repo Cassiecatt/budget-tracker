@@ -1,7 +1,7 @@
 # Budget Tracker
 
 ## Description
-A budget tracker application that allows for offline acess and functionality. A user will be able to add expenses and deposits to their budet with or without a connection. Ifthe user enters transactions offline, the totl should be updated when they're brought back online.
+A budget tracker application that allows for offline acess and functionality. A user will be able to add expenses and deposits to their budet with or without a connection. If the user enters transactions offline, the total should be updated when they're brought back online.
 
 ## User Story
 AS AN avid traveler
