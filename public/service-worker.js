@@ -33,7 +33,7 @@ self.addEventListener("activate", function (e) {
     caches.keys().then((keyList) => {
       return Promise.all(
         keyList.map((key) => {
-          if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
+          if (key !== CACHE_NAME && key !== Data_CACHE_NAME) {
             console.log("removing old cache data", key);
             return caches.delete(key);
           }
@@ -49,7 +49,7 @@ self.addEventListener("fetch", function (e) {
   if (e.request.url.includes("/api/")) {
     e.respondWith(
       caches
-        .open(DATA_CACHE_NAME)
+        .open(Data_CACHE_NAME)
         .then((cache) => {
           return fetch(e.request)
             .then((response) => {
