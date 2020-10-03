@@ -53,4 +53,17 @@ self.addEventListener("fetch", function (e) {
     );
     return;
   }
+
+  e.respondWith(
+    fetch(e.request).catch(function () {
+      return caches.match(e.request).then(function (response) {
+        if (response) {
+          return response;
+        } else if (e.request.headers.get("accept").includes("text/html")) {
+            // return the cached home page for all html requests
+          return caches.match("/");
+        }
+      });
+    })
+  );
 });
